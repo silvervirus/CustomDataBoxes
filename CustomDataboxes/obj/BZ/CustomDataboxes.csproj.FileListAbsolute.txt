@@ -1,0 +1,7 @@
+C:\Users\Cookay\Desktop\Mod Sourcecode\Qmods\BZ\CustomDataboxes\CustomDataboxes.xml
+C:\Users\Cookay\Desktop\Mod Sourcecode\Qmods\BZ\CustomDataboxes\CustomDataboxes.dll
+C:\Users\Cookay\Desktop\Mod Sourcecode\MetiousSubnauticaMods-master\CustomDataboxes\obj\BZ\CustomDataboxes.csproj.AssemblyReference.cache
+C:\Users\Cookay\Desktop\Mod Sourcecode\MetiousSubnauticaMods-master\CustomDataboxes\obj\BZ\MyPluginInfo.cs
+C:\Users\Cookay\Desktop\Mod Sourcecode\MetiousSubnauticaMods-master\CustomDataboxes\obj\BZ\CustomDataboxes.GeneratedMSBuildEditorConfig.editorconfig
+C:\Users\Cookay\Desktop\Mod Sourcecode\MetiousSubnauticaMods-master\CustomDataboxes\obj\BZ\CustomDataboxes.csproj.CoreCompileInputs.cache
+C:\Users\Cookay\Desktop\Mod Sourcecode\MetiousSubnauticaMods-master\CustomDataboxes\obj\BZ\CustomDataboxes.dll
