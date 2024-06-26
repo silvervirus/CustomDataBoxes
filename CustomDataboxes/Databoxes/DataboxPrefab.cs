@@ -15,12 +15,12 @@ namespace CustomDataboxes.Databoxes
         readonly string primaryTooltip;
         readonly string secondaryTooltip;
         readonly TechType unlockTechType;
-        readonly LootDistributionData.BiomeData[] biomesToSpawnIn;
+        readonly List<LootDistributionData.BiomeData> biomesToSpawnIn;
         readonly List<SpawnLocation> coordinatedSpawns;
 
         [SetsRequiredMembers]
         public DataboxPrefab(string classId, string alreadyUnlockedTooltip, string primaryTooltip,
-            string secondaryTooltip, TechType unlockTechType, LootDistributionData.BiomeData[] biomesToSpawnIn,
+            string secondaryTooltip, TechType unlockTechType, List<LootDistributionData.BiomeData> biomesToSpawnIn,
             List<SpawnLocation> coordinatedSpawns)
             : base(classId, classId, classId + " Databox")
         {
@@ -31,21 +31,13 @@ namespace CustomDataboxes.Databoxes
             this.biomesToSpawnIn = biomesToSpawnIn;
             this.coordinatedSpawns = coordinatedSpawns;
             SetGameObject(GetGameObjectAsync);
-            this.Register();
-            this.SetSpawns(EntityInfo,biomesToSpawnIn);
+            
+            
         }
 
-        public WorldEntityInfo EntityInfo => new WorldEntityInfo()
-        {
-            cellLevel = LargeWorldEntity.CellLevel.Medium,
-            classId = Info.ClassID,
-            localScale = Vector3.one,
-            prefabZUp = false,
-            slotType = EntitySlot.Type.Medium,
-            techType = this.Info.TechType
-        };
+        public  WorldEntityInfo EntityInfo => new WorldEntityInfo() { cellLevel = LargeWorldEntity.CellLevel.Medium, classId = Info.ClassID, localScale = Vector3.one, prefabZUp = false, slotType = EntitySlot.Type.Medium, techType = this.Info.TechType };
 
-        public LootDistributionData.BiomeData[] BiomesToSpawnIn => this.biomesToSpawnIn;
+        public List<LootDistributionData.BiomeData> BiomesToSpawnIn => this.biomesToSpawnIn;
 
         public List<SpawnLocation> CoordinatedSpawns => coordinatedSpawns;
 
@@ -58,10 +50,10 @@ namespace CustomDataboxes.Databoxes
 
             yield return request;
 
-             request.TryGetPrefab(out GameObject prefab);
-           
+            request.TryGetPrefab(out GameObject prefab);
+
             GameObject _GameObject = GameObject.Instantiate(prefab);
-            
+
 
             _GameObject.name = Info.ClassID;
             _GameObject.SetActive(false);

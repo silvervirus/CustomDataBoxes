@@ -14,40 +14,40 @@ namespace CustomDataboxes.API
     /// <summary>
     /// The main class to create a Custom Databox.
     /// </summary>
-    
+
     public class Databox
     {
         /// <summary>
         /// the ClassID for the Custom Databox.
         /// </summary>
         public string DataboxID { get; set; }
-        
+
         /// <summary>
         /// The big and primary Description of the Databox.
         /// </summary>
         public string PrimaryDescription { get; set; }
-        
+
         /// <summary>
         /// <para>the smaller Description of the databox which is normally below the
         /// <seealso cref="PrimaryDescription"/>.</para>
         /// </summary>
         public string SecondaryDescription { get; set; }
-        
+
         /// <summary>
         /// The TechType to get unlocked.
         /// </summary>
         public TechType TechTypeToUnlock { get; set; }
-        
+
         /// <summary>
         /// Biomes that the Databox would spawn in
         /// </summary>
-        public LootDistributionData.BiomeData[] BiomesToSpawnIn { get; set; }
-        
+        public List<LootDistributionData.BiomeData> BiomesToSpawnIn { get; set; }
+
         /// <summary>
         /// Coordinated Spawns for the Databox.
         /// </summary>
         public List<SpawnLocation> CoordinatedSpawns { get; set; }
-        
+
         /// <summary>
         /// To edit the Databox's Game Object.
         /// </summary>
@@ -57,14 +57,28 @@ namespace CustomDataboxes.API
         /// the TechType reference of this Databox. please keep in mind that this is always set to <see cref="TechType.None"/> if used before calling the <see cref="Patch"/> method.
         /// </summary>
         public TechType TechType { get; private set; }
-        
+
         /// <summary>
         /// To patch and create the Databox.
         /// </summary>
         public void Patch()
         {
             string name = this.GetType().Assembly.GetName().Name;
-            Debug.Log( $"Recieved Custom databox from '{name}'");
+            Debug.Log($"Initializing CustomDatabox '{name}'...");
+
+            // Debug log to check BiomesToSpawnIn
+            if (BiomesToSpawnIn == null)
+            {
+                Debug.LogError("BiomesToSpawnIn is null.");
+            }
+            else
+            {
+                // Log the contents of BiomesToSpawnIn for debugging
+                foreach (var biome in BiomesToSpawnIn)
+                {
+                    Debug.Log($"Biome: {biome.biome}, Probability: {biome.probability}, Count: {biome.count}");
+                }
+            }
 
             string result = "";
 
@@ -75,7 +89,7 @@ namespace CustomDataboxes.API
             if (!string.IsNullOrEmpty(result))
             {
                 string msg = "Unable to patch\n" + result;
-                Debug.LogError( msg);
+                Debug.LogError(msg);
                 throw new InvalidOperationException(msg);
             }
 
@@ -87,22 +101,12 @@ namespace CustomDataboxes.API
                 BiomesToSpawn = BiomesToSpawnIn,
                 coordinatedSpawns = CoordinatedSpawns,
                 ModifyGameObject = this.ModifyGameObject
-                
             };
-           
+
             dataBox.Register();
-            dataBox.SetSpawns(EntityInfo,dataBox.BiomesToSpawn);
-             
-        TechType = dataBox.Info.TechType;
+
+            TechType = dataBox.Info.TechType;
         }
-        public WorldEntityInfo EntityInfo => new WorldEntityInfo()
-        {
-            cellLevel = LargeWorldEntity.CellLevel.Medium,
-            classId = this.DataboxID,
-            localScale = Vector3.one,
-            prefabZUp = false,
-            slotType = EntitySlot.Type.Medium,
-            techType = this.TechType
-        };
+
     }
 }

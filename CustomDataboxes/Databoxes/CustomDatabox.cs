@@ -19,20 +19,54 @@ namespace CustomDataboxes.Databoxes
 
         public TechType TechTypeToUnlock { get; set; }
 
-        public LootDistributionData.BiomeData[] BiomesToSpawn { get; set; }
+        public List<LootDistributionData.BiomeData> BiomesToSpawn { get; set; }
 
         public List<SpawnLocation> coordinatedSpawns { get; set; }
 
         public Action<GameObject> ModifyGameObject { get; set; }
+        public List<LootDistributionData.BiomeData> BiomesToSpawnIn => this.BiomesToSpawn;
+
+        public List<SpawnLocation> CoordinatedSpawns => this.coordinatedSpawns;
 
         [SetsRequiredMembers]
-        public CustomDatabox(string databoxID)
-            : base(databoxID, databoxID, databoxID)
+        public CustomDatabox(string databoxID) : base(databoxID, databoxID, databoxID)
         {
-            SetGameObject(GetGameObjectAsync);
-            this.Register();
-            this.SetSpawns(EntityInfo,BiomesToSpawnIn);
+            Debug.Log("Initializing CustomDatabox...");
+
+            try
+            {
+                SetGameObject(GetGameObjectAsync);
+
+                // Initialize BiomesToSpawn with a valid list of biomes
+                this.BiomesToSpawn = BiomesToSpawnIn;
+
+                if (BiomesToSpawnIn == null)
+                {
+                    Debug.LogError("BiomesToSpawn is null.");
+                }
+                else
+                {
+                    // Log the contents of the BiomesToSpawn list for debugging
+                    foreach (var biome in BiomesToSpawnIn)
+                    {
+                        Debug.Log($"Biome: {biome.biome}, Probability: {biome.probability}, Count: {biome.count}");
+                    }
+
+                    // Set spawns using the List<> overload
+                    this.SetSpawns(EntityInfo, BiomesToSpawnIn.ToArray());
+                }
+
+               
+                Debug.Log("CustomDatabox initialized.");
+            }
+            catch (Exception ex)
+            {
+                Debug.LogError($"Exception occurred during CustomDatabox initialization: {ex.Message}");
+                Debug.LogError(ex.StackTrace);
+            }
         }
+
+
 
         public WorldEntityInfo EntityInfo => new WorldEntityInfo()
         {
@@ -44,9 +78,7 @@ namespace CustomDataboxes.Databoxes
             techType = this.Info.TechType
         };
 
-        public LootDistributionData.BiomeData[] BiomesToSpawnIn => this.BiomesToSpawn;
-
-        public List<SpawnLocation> CoordinatedSpawns => this.coordinatedSpawns;
+       
 
 #if SN1
         public IEnumerator GetGameObjectAsync(IOut<GameObject> gameObject)
@@ -57,10 +89,10 @@ namespace CustomDataboxes.Databoxes
             yield return request;
 
             request.TryGetPrefab(out GameObject prefab);
-           
+
 
             GameObject _GameObject = GameObject.Instantiate(prefab);
-           
+
             _GameObject.name = Info.ClassID;
             BlueprintHandTarget blueprintHandTarget = _GameObject.GetComponent<BlueprintHandTarget>();
             if (blueprintHandTarget == null)
@@ -73,11 +105,19 @@ namespace CustomDataboxes.Databoxes
             blueprintHandTarget.primaryTooltip = PrimaryDescription;
             blueprintHandTarget.secondaryTooltip = SecondaryDescription ?? PrimaryDescription;
             blueprintHandTarget.unlockTechType = TechTypeToUnlock;
-            _GameObject.SetActive(false);
+            _GameObject.SetActive(true);
 
             gameObject.Set(_GameObject);
             Debug.Log("GetGameObjectAsync completed successfully.");
         }
+        public static LootDistributionData.BiomeData[] ConvertListToArray(List<LootDistributionData.BiomeData> biomeList)
+        {
+            return biomeList.ToArray();
+        }
+        
+        
+          
+        
 
 #elif BZ
         public IEnumerator GetGameObjectAsync(IOut<GameObject> gameObject)

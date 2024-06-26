@@ -24,6 +24,8 @@ using Newtonsoft.Json.Serialization;
     using static OVRPlugin;
     using Debug = UnityEngine.Debug;
     using Newtonsoft.Json.Serialization;
+    using UWE;
+    using CustomDataboxes.API;
 
     [BepInPlugin(GUID, MODNAME, VERSION)]
     [BepInDependency("com.snmodding.nautilus", BepInDependency.DependencyFlags.HardDependency)]
@@ -42,15 +44,10 @@ using Newtonsoft.Json.Serialization;
         internal static string BiomeList = ModPath + "/Biomes.json";
         internal static string ExampleFile = ModPath + "/ExampleFile.json";
         public const string version = "1.2.0.0";
-        private static DataboxPrefab databux;
-        public static MonoBehaviour moomoo;
-        
-
-        internal static DataboxPrefab Databux { get => databux; set => databux = value; }
-
+   
         public void Awake()
         {
-            
+
             EnsureBiomeList();
             EnsureExample();
 
@@ -66,7 +63,7 @@ using Newtonsoft.Json.Serialization;
                     using (var reader = new StreamReader(file.FullName))
                     {
                         var serializer = new JsonSerializer();
-                        databox = JsonConvert.DeserializeObject<DataboxInfo>(reader.ReadToEnd(), new JsonConverter[] 
+                        databox = JsonConvert.DeserializeObject<DataboxInfo>(reader.ReadToEnd(), new JsonConverter[]
                         {
                             new StringEnumConverter()
                             {
@@ -91,8 +88,10 @@ using Newtonsoft.Json.Serialization;
                         {
                             var customDatabox = new DataboxPrefab(databox.DataboxID, databox.AlreadyUnlockedDescription, databox.PrimaryDescription, databox.SecondaryDescription, tt, databox.BiomesToSpawnIn, databox.CoordinatedSpawns);
                             customDatabox.Register();
+
                            
-                        }
+
+    }
                         else
                         {
                             throw new Exception($"Couldn't parse {databox.ItemToUnlock} to TechType.");
@@ -100,16 +99,16 @@ using Newtonsoft.Json.Serialization;
                     }
                     else
                     {
-                        Debug.Log( $"Unable to load Custom Databox from {Path.GetDirectoryName(file.FullName)}!");
+                        Debug.Log($"Unable to load Custom Databox from {Path.GetDirectoryName(file.FullName)}!");
                     }
                 }
                 catch (Exception e)
                 {
-                    Debug.Log( $"Unable to load Custom Databox from {Path.GetDirectoryName(file.FullName)}!");
+                    Debug.Log($"Unable to load Custom Databox from {Path.GetDirectoryName(file.FullName)}!");
                 }
             }
         }
-
+        
         private static void EnsureExample()
         {
             if (!File.Exists(ExampleFile))
@@ -126,21 +125,21 @@ using Newtonsoft.Json.Serialization;
                         new SpawnLocation(new Vector3(5, -5, 5), new Vector3(10, -100, 253))
                     },
 #if SN1
-                    BiomesToSpawnIn = new LootDistributionData.BiomeData[]
+                    BiomesToSpawnIn = new List<LootDistributionData.BiomeData>
                     {
-                        new LootDistributionData.BiomeData
+                        new LootDistributionData.BiomeData()
                         {
                             biome = BiomeType.GrassyPlateaus_Grass,
                             count = 1,
                             probability = 0.1f
                         },
-                        new LootDistributionData.BiomeData
+                        new LootDistributionData.BiomeData()
                         {
                             biome = BiomeType.GrassyPlateaus_TechSite,
                             count = 1,
                             probability = 0.5f
                         },
-                        new LootDistributionData.BiomeData
+                        new LootDistributionData.BiomeData()
                         {
                             biome = BiomeType.GrassyPlateaus_TechSite_Scattered,
                             count = 1,
